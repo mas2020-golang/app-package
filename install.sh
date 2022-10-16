@@ -20,7 +20,7 @@ export STOP_COLOR="\e[0m"
 #set -x
 printf "${ACTIVITY}%s ${STOP_COLOR}" "Installing the $REPO application..."
 version=$(curl -sI https://github.com/$OWNER/$REPO/releases/latest | grep -i "location:" | awk -F"/" '{ printf "%s", $NF }' | tr -d '\r')
-#set -x
+
 #version=${version:1}
 printf "\nselected version for %s is '%q'" $REPO $version
 if [ ! $version ]; then
@@ -86,10 +86,10 @@ getPackage() {
   esac
   targetFile="/tmp/$REPO_$version_$suffix.tar.gz"
   downloadFile="${REPO}_${version}_${suffix}.tar.gz"
-  printf "\nthe file to download is '%q'" "${downloadFile}"
+  printf "\n• the file to download is '%q'" "${downloadFile}"
 
   if [ "$userid" != "0" ]; then
-    targetFile="$(pwd)/$REPO$suffix"
+    targetFile="$(pwd)/$REPO_$version_$suffix.tar.gz"
   fi
 
   if [ -e "$targetFile" ]; then
@@ -97,20 +97,32 @@ getPackage() {
   fi
 
   url="https://github.com/$OWNER/$REPO/releases/download/$version/${downloadFile}"
-  printf "\n${SUB_ACT} %s ${STOP_COLOR}" "downloading package $url as $targetFile..."
+  printf "\n${SUB_ACT} %s\n%s ${STOP_COLOR}\n" "downloading package:" "$url --> $targetFile..."
 
   http_code=$(curl -sSL $url -w '%{http_code}\n' --output "$targetFile")
 
   # check the file not found
-  if [ ${http_code} -eq 404 ] || [ "$?" != "0" ]; then
-    printf "\n${ERROR} no file as a target download has been found"
+  if [[ ${http_code} -eq 404 ]]; then
+    printf "\n${ERROR} no file as a target download has been found\n"
     exit 1
   fi
-
+  
   if [ "$?" = "0" ]; then
     chmod +x "$targetFile"
-    printf "\n${DONE} download complete"
+    printf "\n${DONE} download complete\n"
 
+    # untar the file
+    printf "\n${SUB_ACT} untar the package ${STOP_COLOR}\n"
+    tar xzf $targetFile > /dev/null
+    oldTargetFile=$targetFile
+    targetFile=$(dirname $targetFile)"/$REPO"
+    rm $oldTargetFile
+    if [ "$?" = "0" ]; then
+      printf "\n${DONE}\n"
+    else
+      printf "\n${ERROR} occurred during the tar of the file\n"
+    fi
+    
     if [ ! -w "$BINLOCATION" ]; then
       echo
       echo "============================================================"
@@ -119,13 +131,13 @@ getPackage() {
       echo "  following commands may need to be run manually."
       echo "============================================================"
       echo
-      echo "  sudo cp $REPO$suffix $BINLOCATION/$REPO"
+      echo "  sudo cp ${targetFile} $BINLOCATION/$REPO"
 
       if [ -n "$ALIAS_NAME" ]; then
         echo "  sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
       fi
     else
-      printf "${SUB_ACT} %s ${STOP_COLOR}" "moving $REPO to $BINLOCATION..."
+      printf "\n${SUB_ACT} %s ${STOP_COLOR}" "moving $REPO to $BINLOCATION..."
 
       if [ ! -w "$BINLOCATION/$REPO" ] && [ -f "$BINLOCATION/$REPO" ]; then
         echo
