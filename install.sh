@@ -137,16 +137,17 @@ getPackage() {
     
     if [ ! -w "$BINLOCATION" ]; then
       echo
-      echo "============================================================"
-      echo "  The script was run as a user who is unable to write"
-      echo "  to $BINLOCATION. To complete the installation the"
-      echo "  following commands may need to be run manually."
-      echo "============================================================"
+      echo "======================================================"
+      echo "The script was run as a user who is unable to write"
+      echo "to $BINLOCATION. To complete the installation the"
+      echo "following commands may need to be run manually."
+      echo "======================================================"
       echo
-      echo "  sudo cp ${targetFile} $BINLOCATION/$REPO"
+      echo "To install type:"
+      echo "sudo cp ${targetFile} $BINLOCATION/$REPO"
 
       if [ -n "$ALIAS_NAME" ]; then
-        echo "  sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
+        echo "sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
       fi
     else
       printf "\n${SUB_ACT} %s ${STOP_COLOR}" "moving $REPO to $BINLOCATION..."

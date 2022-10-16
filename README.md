@@ -58,5 +58,12 @@ app-package
 
 TODO: take a look [here](https://wiki.debian.org/DebianRepository/SetupWithReprepro) for understanding how to create an apt pakcage for distributing on the Debian based distros.
 
+### Install using the installation script (Linux, Mac)
+
+You can simply install typing:
+
+```shell
+curl -sL  https://raw.githubusercontent.com/mas2020-golang/app-package/main/install.sh | bash
+```
 
 
