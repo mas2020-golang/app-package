@@ -34,5 +34,4 @@ brews:
       name: homebrew-app-package
     folder: Formula
     homepage: https://github.com/mas2020-golang/app-package
-    description: |
-    app-package official Homebrew distribution!
+    description: "app-package official Homebrew distribution!"
