@@ -21,7 +21,7 @@ archives:
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ incpatch .Version }}-next"
+  name_template: "{{ incpatch .Version }}-snapshot"
 changelog:
   sort: asc
   filters:
@@ -41,10 +41,10 @@ nfpms:
     replacements:
       amd64: 64-bit
       386: 32-bit
-      darwin: macOS
       linux: Tux
       description: |-
         "app-package official deb distribution!"
     license: Apache 2.0
     formats:
       - deb
+    maintainer: mas2020 <andrea.genovesi@gmail.com>
