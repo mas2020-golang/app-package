@@ -56,5 +56,7 @@ sudo dpkg --list | grep app-package
 app-package
 ```
 
+TODO: take a look [here](https://wiki.debian.org/DebianRepository/SetupWithReprepro) for understanding how to create an apt pakcage for distributing on the Debian based distros.
+
 
 
