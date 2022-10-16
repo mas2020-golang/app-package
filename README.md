@@ -29,7 +29,7 @@ This chapter shows the several ways the app can be installed.
 You can download directly from github, extract the file and place into a folder that is included in your PATH.
 Go [here](https://github.com/mas2020-golang/app-package/releases) and download the release and the package that is compatible with your operating system.
 
-### Install the Homebrew formulae
+### Install the Homebrew formulae (Mac, Linux)
 
 You can install on Mac and Linux if you have Homebrew on board:
 
@@ -41,4 +41,20 @@ brew install app-package
 # test the application then
 app-package
 ```
+
+### Install the .deb package (Linux Debian based distro)
+
+You can download the package for your system from the official [releases](https://github.com/mas2020-golang/app-package/releases) and run the installation.
+
+For example:
+
+```shell
+sudo dpkg --install app-package_0.1.0-rc.2_Tux_64-bit.deb
+# take a look
+sudo dpkg --list | grep app-package
+# run the application
+app-package
+```
+
+
 
