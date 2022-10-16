@@ -35,3 +35,16 @@ brews:
     folder: Formula
     homepage: https://github.com/mas2020-golang/app-package
     description: "app-package official Homebrew distribution!"
+nfpms:
+  - id: app-package
+    #package_name: foo
+    replacements:
+      amd64: 64-bit
+      386: 32-bit
+      darwin: macOS
+      linux: Tux
+      description: |-
+        "app-package official deb distribution!"
+    license: Apache 2.0
+    formats:
+      - deb
