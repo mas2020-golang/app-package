@@ -10,8 +10,20 @@ export REPO=app-package
 export BINLOCATION="/usr/local/bin"
 export SUCCESS_CMD="$BINLOCATION/$REPO"
 
-source utils.sh
 # -- COLORS
+export STOP_COLOR="\e[0m"
+# color for a main activity
+export ACTIVITY="\e[1;33m"
+# color for a sub activity
+export SUB_ACT="\e[1;34m>\e[0m"
+export DONE="\e[1;32m│ Done\e[0m"
+export OK="\e[1;32mOK\e[0m"
+export ERROR="\e[1;31m│ Error:\e[0m"
+export WARNING="\e[0;33m│ Warning:\e[0m"
+export GREEN="\e[1;32m"
+export RED="\e[1;31m"
+export YELLOW="\e[1;33m"
+export RESET="\e[0m"
 export STOP_COLOR="\e[0m"
 
 ###############################
