@@ -117,7 +117,7 @@ getPackage() {
     printf "${ERROR} no file as a target download has been found\n"
     exit 1
   fi
-  
+
   if [ "$?" = "0" ]; then
     chmod +x "$targetFile"
     printf "${DONE} download complete\n"
@@ -125,7 +125,7 @@ getPackage() {
     # untar the file
     printf "\n${SUB_ACT} untar the package ${STOP_COLOR}\n"
     cd $(dirname $targetFile)
-    tar xzf $targetFile > /dev/null
+    tar xzf $targetFile >/dev/null
     oldTargetFile=$targetFile
     targetFile=$(dirname $targetFile)"/$REPO"
     rm $oldTargetFile
@@ -135,7 +135,7 @@ getPackage() {
       printf "${ERROR} occurred during the tar of the file\n"
       exit 1
     fi
-    
+
     if [ ! -w "$BINLOCATION" ]; then
       echo
       echo "======================================================"
@@ -152,6 +152,9 @@ getPackage() {
         if [ ! $(which $ALIAS_NAME) ]; then
           echo "sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
         fi
+      fi
+      if [ -e "$targetFile" ]; then
+        rm "$targetFile"
       fi
     else
       printf "\n${SUB_ACT} %s ${STOP_COLOR}\n" "moving $REPO to $BINLOCATION..."
