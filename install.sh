@@ -4,19 +4,19 @@
 # Repo specific content #
 #########################
 
-export ALIAS_NAME="app-package"
+export ALIAS_NAME=""
 export OWNER=mas2020-golang
 export REPO=app-package
 export BINLOCATION="/usr/local/bin"
 export SUCCESS_CMD="$BINLOCATION/$REPO"
 
 # -- COLORS
-export STOP_COLOR="\e[0m"
 # color for a main activity
 export ACTIVITY="\e[1;33m"
 # color for a sub activity
 export SUB_ACT="\e[1;34m>\e[0m"
 export DONE="\e[1;32m│ Done\e[0m"
+export INFO="\e[1;32m•\e[0m"
 export OK="\e[1;32mOK\e[0m"
 export ERROR="\e[1;31m│ Error:\e[0m"
 export WARNING="\e[0;33m│ Warning:\e[0m"
@@ -30,11 +30,11 @@ export STOP_COLOR="\e[0m"
 # Content common across repos #
 ###############################
 #set -x
-printf "${ACTIVITY}%s ${STOP_COLOR}" "Installing the $REPO application..."
+printf "${ACTIVITY}%s ${STOP_COLOR}\n" "Installing the '$REPO' application..."
 version=$(curl -sI https://github.com/$OWNER/$REPO/releases/latest | grep -i "location:" | awk -F"/" '{ printf "%s", $NF }' | tr -d '\r')
 
 #version=${version:1}
-printf "\nselected version for %s is '%q'" $REPO $version
+printf "${INFO} selected version for %s is '%q'\n" $REPO $version
 if [ ! $version ]; then
   echo "Failed while attempting to install $REPO. Please manually install:"
   echo ""
@@ -49,9 +49,8 @@ if [ ! $version ]; then
 fi
 
 hasCli() {
-  hasCurl=$(which curl)
-  if [ "$?" = "1" ]; then
-    echo "You need curl to use this script."
+  if [[ ! $(which curl) ]]; then
+    printf "${ERROR} You need curl to use this script\n"
     exit 1
   fi
 }
@@ -98,7 +97,7 @@ getPackage() {
   esac
   targetFile="/tmp/$REPO_$version_$suffix.tar.gz"
   downloadFile="${REPO}_${version}_${suffix}.tar.gz"
-  printf "\n• the file to download is '%q'" "${downloadFile}"
+  printf "${INFO} the file to download is '%q'\n" "${downloadFile}"
 
   if [ "$userid" != "0" ]; then
     targetFile="$(pwd)/$REPO_$version_$suffix.tar.gz"
@@ -115,24 +114,26 @@ getPackage() {
 
   # check the file not found
   if [[ ${http_code} -eq 404 ]]; then
-    printf "\n${ERROR} no file as a target download has been found\n"
+    printf "${ERROR} no file as a target download has been found\n"
     exit 1
   fi
   
   if [ "$?" = "0" ]; then
     chmod +x "$targetFile"
-    printf "\n${DONE} download complete\n"
+    printf "${DONE} download complete\n"
 
     # untar the file
     printf "\n${SUB_ACT} untar the package ${STOP_COLOR}\n"
+    cd $(dirname $targetFile)
     tar xzf $targetFile > /dev/null
     oldTargetFile=$targetFile
     targetFile=$(dirname $targetFile)"/$REPO"
     rm $oldTargetFile
     if [ "$?" = "0" ]; then
-      printf "\n${DONE}\n"
+      printf "${DONE}\n"
     else
-      printf "\n${ERROR} occurred during the tar of the file\n"
+      printf "${ERROR} occurred during the tar of the file\n"
+      exit 1
     fi
     
     if [ ! -w "$BINLOCATION" ]; then
@@ -146,11 +147,14 @@ getPackage() {
       echo "To install type:"
       echo "sudo cp ${targetFile} $BINLOCATION/$REPO"
 
+      # if ALIAS_NAME is set
       if [ -n "$ALIAS_NAME" ]; then
-        echo "sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
+        if [ ! $(which $ALIAS_NAME) ]; then
+          echo "sudo ln -sf $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME"
+        fi
       fi
     else
-      printf "\n${SUB_ACT} %s ${STOP_COLOR}" "moving $REPO to $BINLOCATION..."
+      printf "\n${SUB_ACT} %s ${STOP_COLOR}\n" "moving $REPO to $BINLOCATION..."
 
       if [ ! -w "$BINLOCATION/$REPO" ] && [ -f "$BINLOCATION/$REPO" ]; then
         echo
@@ -165,7 +169,8 @@ getPackage() {
       mv "$targetFile" $BINLOCATION/$REPO
 
       if [ "$?" = "0" ]; then
-        printf "\n${DONE} new version of $REPO installed to $BINLOCATION"
+        printf "${DONE} new version of $REPO installed to $BINLOCATION\n"
+        printf "${INFO} the README file has been saved in %s\n" $(dirname $targetFile)
       fi
 
       if [ -e "$targetFile" ]; then
@@ -174,15 +179,15 @@ getPackage() {
 
       if [ -n "$ALIAS_NAME" ]; then
         if [ $(which $ALIAS_NAME) ]; then
-          printf "\n${WARNING} there is already a command '$ALIAS_NAME' in the path, NOT creating alias"
+          printf "${WARNING} there is already a command '$ALIAS_NAME' in the path, NOT creating alias\n"
         else
           if [ ! -L $BINLOCATION/$ALIAS_NAME ]; then
             ln -s $BINLOCATION/$REPO $BINLOCATION/$ALIAS_NAME
-            printf "\n${WARNING} created alias '$ALIAS_NAME' for '$REPO'"
+            printf "${DONE} created alias '$ALIAS_NAME' for '$REPO'\n"
           fi
         fi
       fi
-      printf "${SUB_ACT} checking application...\n"
+      printf "\n${SUB_ACT} checking application...\n"
       ${SUCCESS_CMD}
     fi
   fi
