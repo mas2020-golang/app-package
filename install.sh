@@ -15,8 +15,8 @@ export SUCCESS_CMD="$BINLOCATION/$REPO"
 export ACTIVITY="\e[1;33m"
 # color for a sub activity
 export SUB_ACT="\e[1;34m>\e[0m"
-export DONE="\e[1;32m│ Done\e[0m"
-export INFO="\e[1;32m•\e[0m"
+export DONE="\e[1;32m• Done\e[0m"
+export INFO="•"
 export OK="\e[1;32mOK\e[0m"
 export ERROR="\e[1;31m│ Error:\e[0m"
 export WARNING="\e[0;33m│ Warning:\e[0m"
@@ -108,7 +108,7 @@ getPackage() {
   fi
 
   url="https://github.com/$OWNER/$REPO/releases/download/$version/${downloadFile}"
-  printf "\n${SUB_ACT} %s\n%s ${STOP_COLOR}\n" "downloading package:" "$url --> $targetFile..."
+  printf "\n${SUB_ACT} downloading package from:\n%s ${STOP_COLOR}\n" $url
 
   http_code=$(curl -sSL $url -w '%{http_code}\n' --output "$targetFile")
 
@@ -120,7 +120,7 @@ getPackage() {
 
   if [ "$?" = "0" ]; then
     chmod +x "$targetFile"
-    printf "${DONE} download complete\n"
+    printf "${DONE}\n"
 
     # untar the file
     printf "\n${SUB_ACT} untar the package ${STOP_COLOR}\n"
@@ -172,7 +172,7 @@ getPackage() {
       mv "$targetFile" $BINLOCATION/$REPO
 
       if [ "$?" = "0" ]; then
-        printf "${DONE} new version of $REPO installed to $BINLOCATION\n"
+        printf "${DONE}: new version of $REPO installed in $BINLOCATION\n"
         printf "${INFO} the README file has been saved in %s\n" $(dirname $targetFile)
       fi
 
