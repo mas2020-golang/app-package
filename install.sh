@@ -15,8 +15,9 @@ export SUCCESS_CMD="$BINLOCATION/$REPO"
 export ACTIVITY="\e[1;33m"
 # color for a sub activity
 export SUB_ACT="\e[1;34m>\e[0m"
-export DONE="\e[1;32m• Done\e[0m"
-export INFO="•"
+export INFO="+"
+export DONE="\e[1;32mDone!\e[0m"
+export SUCCESS="\e[1;32mSuccess!\e[0m"
 export OK="\e[1;32mOK\e[0m"
 export ERROR="\e[1;31m│ Error:\e[0m"
 export WARNING="\e[0;33m│ Warning:\e[0m"
@@ -24,13 +25,12 @@ export GREEN="\e[1;32m"
 export RED="\e[1;31m"
 export YELLOW="\e[1;33m"
 export RESET="\e[0m"
-export STOP_COLOR="\e[0m"
 
 ###############################
 # Content common across repos #
 ###############################
 #set -x
-printf "${ACTIVITY}%s ${STOP_COLOR}\n" "Installing the '$REPO' application..."
+printf "${ACTIVITY}%s ${RESET}\n" "Installing the '$REPO' application..."
 version=$(curl -sI https://github.com/$OWNER/$REPO/releases/latest | grep -i "location:" | awk -F"/" '{ printf "%s", $NF }' | tr -d '\r')
 
 #version=${version:1}
@@ -108,7 +108,7 @@ getPackage() {
   fi
 
   url="https://github.com/$OWNER/$REPO/releases/download/$version/${downloadFile}"
-  printf "\n${SUB_ACT} downloading package from:\n%s ${STOP_COLOR}\n" $url
+  printf "\n${SUB_ACT} downloading package from:\n%s ${RESET}\n" $url
 
   http_code=$(curl -sSL $url -w '%{http_code}\n' --output "$targetFile")
 
@@ -123,7 +123,7 @@ getPackage() {
     printf "${DONE}\n"
 
     # untar the file
-    printf "\n${SUB_ACT} untar the package ${STOP_COLOR}\n"
+    printf "\n${SUB_ACT} untar the package ${RESET}\n"
     cd $(dirname $targetFile)
     tar xzf $targetFile >/dev/null
     oldTargetFile=$targetFile
@@ -157,7 +157,7 @@ getPackage() {
         rm "$targetFile"
       fi
     else
-      printf "\n${SUB_ACT} %s ${STOP_COLOR}\n" "moving $REPO to $BINLOCATION..."
+      printf "\n${SUB_ACT} %s ${RESET}\n" "moving $REPO to $BINLOCATION..."
 
       if [ ! -w "$BINLOCATION/$REPO" ] && [ -f "$BINLOCATION/$REPO" ]; then
         echo
@@ -172,7 +172,7 @@ getPackage() {
       mv "$targetFile" $BINLOCATION/$REPO
 
       if [ "$?" = "0" ]; then
-        printf "${DONE}: new version of $REPO installed in $BINLOCATION\n"
+        printf "${DONE} New version of $REPO installed in $BINLOCATION\n"
         printf "${INFO} the README file has been saved in %s\n" $(dirname $targetFile)
       fi
 
