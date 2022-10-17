@@ -65,3 +65,5 @@ You can install the latest version using the installation script. Run the follow
 ```shell
 curl -sL  https://raw.githubusercontent.com/mas2020-golang/app-package/main/install.sh | bash
 ```
+
+TODO: test install.sh on CentOS and Alpine.
