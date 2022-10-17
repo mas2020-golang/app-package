@@ -67,3 +67,4 @@ curl -sL  https://raw.githubusercontent.com/mas2020-golang/app-package/main/inst
 ```
 
 TODO: test install.sh on CentOS and Alpine.
+TODO: test install.sh on Mac and Ubuntu using sudo and the normal user.
